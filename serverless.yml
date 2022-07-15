@@ -1,0 +1,62 @@
+service: learnServerless
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ap-southeast-1
+  iam:
+    role: arn:aws:iam::234758500005:role/service-role/api-new-role
+
+
+functions:
+  hello:
+    handler: src/hello.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+  getProducts:
+    handler: src/getProducts.handler
+    events:
+      - httpApi:
+          path: /get-products
+          method: get
+  getProduct:
+    handler: src/getProductDetail.handler
+    events:
+      - httpApi:
+          path: /get-product
+          method: get
+  addProduct:
+    handler: src/addProduct.handler
+    events:
+      - httpApi:
+          path: /add-product
+          method: post
+  updateProduct:
+    handler: src/updateProduct.handler
+    events:
+      - httpApi:
+          path: /update-product
+          method: post
+  deleteProduct:
+    handler: src/deleteProduct.handler
+    events:
+      - httpApi:
+          path: /delete-product
+          method: post
+
+resources:
+  Resources:
+    ProductTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: productTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
